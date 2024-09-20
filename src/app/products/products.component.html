@@ -1,0 +1,73 @@
+<div>
+
+  <!-- Search Input -->
+  <div class="search-container">
+    <input type="text" [(ngModel)]="searchQuery" (input)="searchProducts()" placeholder="Search by name or tags" />
+  </div>
+
+  <div class="table-container">
+    <table border="1" class="product-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Barcode</th>
+          <th>Name</th>
+          <th>Image</th>
+          <th>Tags</th>
+          <th>Rating</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-body">
+        <tr *ngFor="let product of products">
+          <td>{{ product.id }}</td>
+          <td>{{ product.meta?.barcode }}</td>
+          <td>{{ product.title }}</td>
+          <td>
+            <div class="image-container">
+              <img *ngFor="let image of product.images" [src]="image" alt="Product Image" class="product-image">
+            </div>
+          </td>
+          <td>{{ product.tags.join(', ') }}</td>
+          <td>{{ product.rating }}</td>
+          <td>{{ product.price | currency }}</td>
+          <td>
+            <button (click)="editProduct(product)">Edit</button>
+            <button (click)="deleteProduct(product.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination controls -->
+  <div class="pagination">
+    <button (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
+    <span>Page {{currentPage + 1}} of {{totalPages}}</span>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Next</button>
+  </div>
+
+  <h3>{{ isEditing ? 'Edit Product' : 'Add Product' }}</h3>
+  <form (ngSubmit)="addProduct()">
+    <label for="barcode">Barcode:</label>
+    <input type="text" [(ngModel)]="newProduct.meta.barcode" name="barcode" required>
+    
+    <label for="name">Name:</label>
+    <input type="text" [(ngModel)]="newProduct.title" name="title" required>
+    
+    <label for="images">Image URLs (comma-separated):</label>
+    <input type="text" [(ngModel)]="newProduct.imagesString" name="images" required>
+    
+    <label for="tags">Tags (comma-separated):</label>
+    <input type="text" [(ngModel)]="newProduct.tagsString" name="tags" required>    
+    
+    <label for="rating">Rating:</label>
+    <input type="number" [(ngModel)]="newProduct.rating" name="rating" required>
+    
+    <label for="price">Price:</label>
+    <input type="number" [(ngModel)]="newProduct.price" name="price" required>
+    
+    <button type="submit">{{ isEditing ? 'Update Product' : 'Add Product' }}</button>
+  </form>
+</div>
